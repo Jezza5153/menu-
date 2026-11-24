@@ -24,6 +24,7 @@
   .btn.primary { background: #fff; color: var(--wine); border-color: #fff; }
   .btn.primary:hover { background: #f3e9d6; }
   .btn:disabled { opacity: .6; cursor: wait; }
+  #undo:disabled, #redo:disabled { opacity: .35; cursor: default; }
   .paper { font-size: 13px; display: flex; align-items: center; gap: 6px; }
   .paper select { font: inherit; font-weight: 600; border: 0; border-radius: 7px; padding: 7px 8px; background: rgba(255,255,255,.16); color: #fff; cursor: pointer; }
   .paper select option { color: #222; }
@@ -97,6 +98,8 @@
   </div>
   <div class="grow"></div>
   <span id="status"></span>
+  <button class="btn" id="undo" disabled title="Undo your last change (Ctrl+Z or ⌘Z)">Undo</button>
+  <button class="btn" id="redo" disabled title="Redo (Ctrl+Shift+Z or ⌘⇧Z)">Redo</button>
   <button class="btn" id="save" title="Changes are saved automatically while you work. This saves right now.">Save</button>
   <label class="paper" title="Paper size of the PDF. Every page gets a 5 mm white margin all round.">Paper
     <select id="paper"><option value="A4">A4</option><option value="A5">A5</option></select></label>
@@ -150,7 +153,46 @@
   let saveTimer = 0, saving = null, busy = 0, retryTimer = 0, asked = false;
   const now = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   function status(s) { $('#status').textContent = s; }
-  function changed() { status('Saving…'); clearTimeout(saveTimer); saveTimer = setTimeout(save, 500); schedulePreview(); }
+  function touch() { status('Saving…'); clearTimeout(saveTimer); saveTimer = setTimeout(save, 500); schedulePreview(); }
+  function changed() { record(); touch(); }
+
+  // ───── undo / redo ─────
+  // Every change is remembered as "before → after". Undo takes only that change back,
+  // so what other people changed in the meantime stays.
+  const undoList = [], redoList = [];
+  let last = '', lastField = '', lastAt = 0;
+  function mark() { last = JSON.stringify(data); lastField = ''; undoButtons(); }
+  function undoButtons() { $('#undo').disabled = !undoList.length; $('#redo').disabled = !redoList.length; }
+  function record() {
+    const a = JSON.stringify(data); if (a === last) return;
+    const el = document.activeElement, typing = el && el.dataset && el.dataset.f && $('#form').contains(el);
+    const field = typing ? el.dataset.f + '|' + ((el.closest('[data-path]') || el).dataset.path || '') : '';
+    const t = Date.now();
+    if (field && field === lastField && t - lastAt < 1500 && undoList.length) undoList[undoList.length - 1].a = a;   // one stretch of typing = one step
+    else { undoList.push({ b: last, a }); if (undoList.length > 200) undoList.shift(); }
+    redoList.length = 0; last = a; lastField = field; lastAt = t; undoButtons();
+  }
+  function step(back) {
+    const from = back ? undoList : redoList, to = back ? redoList : undoList;
+    const e = from.pop(); if (!e) return;
+    to.push(e);
+    const b = JSON.parse(e.b), a = JSON.parse(e.a);
+    data = back ? MenuStore.merge(a, b, data) : MenuStore.merge(b, a, data);
+    const where = ['diner', 'drinks'].find((m) => !MenuStore.same(a[m], b[m]));
+    mark();
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    if (where && where !== menu) setMenu(where); else refresh();
+    touch(); toast(back ? 'Undone.' : 'Redone.', 1500);
+  }
+  document.addEventListener('keydown', (e) => {
+    if (!(e.metaKey || e.ctrlKey) || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (k === 'z') { e.preventDefault(); step(!e.shiftKey); }
+    else if (k === 'y') { e.preventDefault(); step(false); }
+  });
+  $('#undo').addEventListener('click', () => step(true));
+  $('#redo').addEventListener('click', () => step(false));
+
   function save() {
     clearTimeout(saveTimer); clearTimeout(retryTimer); saveTimer = 0;
     const sent = clone(data); busy++;
@@ -159,7 +201,7 @@
       if (merged) {   // somebody else saved at the same moment: both sets of changes are now combined
         const typedMore = !MenuStore.same(data, sent);
         data = typedMore ? MenuStore.merge(sent, data, merged) : merged;
-        refresh(); if (typedMore) changed();
+        mark(); refresh(); if (typedMore) touch();
       }
       if (locked) { locked = false; showDraft(); }
       if (!saveTimer) status((local ? 'Saved ✓ ' : shared ? 'Saved online ✓ ' : 'Saved on this device ✓ ') + now());
@@ -211,7 +253,7 @@
     if (!shared || document.visibilityState !== 'visible' || saveTimer || busy) return;
     const p = await MenuStore.poll();
     if (!p || saveTimer || busy) return;     // I started typing meanwhile: my next save combines both
-    MenuStore.adopt(p); data = p.data; refresh();
+    MenuStore.adopt(p); data = p.data; mark(); refresh();
     status('Updated by someone else ' + now());
   }
   function download() {
@@ -264,7 +306,7 @@
   }
   function buildForm() {
     const f = $('#form'), top = f.scrollTop;
-    f.innerHTML = `<div id="draft"></div><div id="warn"></div><p class="hint">Click anything on the menu to edit it. ${shared ? 'Changes are saved online automatically, for everyone.' : 'Changes are saved automatically.'}</p>` +
+    f.innerHTML = `<div id="draft"></div><div id="warn"></div><p class="hint">Click anything on the menu to edit it. Made a mistake? Press Ctrl+Z (⌘Z on a Mac) or Undo. ${shared ? 'Changes are saved online automatically, for everyone.' : 'Changes are saved automatically.'}</p>` +
       LAYOUT[menu].map(([title, blocks]) => `<h2 class="pg">${esc(title)}</h2>` +
         blocks.map(([kind, id, label, big]) => kind === 'sec' ? secHTML(id, label) : textHTML(id, label, big)).join('')).join('') +
       `<div class="tools"><a data-tool="download">Download menu file (backup)</a><a data-tool="upload">Load a menu file</a><a data-tool="reset">Reset this menu to the original</a>${local ? '<a data-tool="pull">Get the menu from the website</a>' : ''}</div>`;
@@ -453,7 +495,7 @@
     try {
       if (saveTimer) await save(); else if (saving) await saving;
       const j = await site('pull');
-      data = MenuStore.fill(j.data); buildForm(); drawPreview(); status('Loaded from the website ' + now());
+      data = MenuStore.fill(j.data); mark(); buildForm(); drawPreview(); status('Loaded from the website ' + now());
       toast('This Mac now has the menu from the website.', 5000);
     } catch (err) { if (err.code === 'address') mem(SITE, ''); toast('Could not get the menu from the website: ' + err.message, 10000); }
   }
@@ -478,7 +520,7 @@
   });
 
   load().then(async () => {
-    $('#publish').hidden = !local;
+    $('#publish').hidden = !local; mark();
     setMenu('diner');
     status(draft ? 'Saved on this device' : shared ? 'Shared menu – everyone sees your changes' : '');
     if (pending && confirm('This device still has changes that were never saved online. Use them now?\n\nOK = put them in the shared menu\nCancel = throw them away')) {
