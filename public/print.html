@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Menu – print</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #fff; }
+  .page.too-full { box-shadow: none; }
+  #help { font: 14px -apple-system, sans-serif; background: #481723; color: #fff; padding: 10px 16px; }
+  #help b { font-weight: 600; }
+  @media print { #help { display: none; } }
+</style>
+</head>
+<body>
+<div id="help" hidden>In the print window choose <b>Save as PDF</b>, paper size <b id="hsize"></b>, margins <b>Default</b> (or None), and switch <b>Background graphics</b> on. Works best in Google Chrome.</div>
+<div id="pages"></div>
+<script src="defaults.js"></script>
+<script src="render.js"></script>
+<script src="store.js"></script>
+<script>
+(async function () {
+  const q = new URLSearchParams(location.search);
+  const menu = q.get('menu') === 'drinks' ? 'drinks' : 'diner';
+  const def = MenuRender.MENUS[menu];
+  const size = MenuRender.PAPER[q.get('size')] ? q.get('size') : def.paper;
+  const st = document.createElement('style');
+  st.textContent = `@page { size: ${size}; margin: 0; }`;
+  document.head.appendChild(st);
+  const { data } = await MenuStore.init();
+  const box = document.getElementById('pages');
+  MenuRender.render(menu, data, box);
+  MenuRender.sheets(box, menu, size);
+  await MenuStore.fonts();
+  await Promise.all([...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; })));
+  MenuRender.fit(box, menu);
+  document.title = `${def.file} ${size}`;
+  document.body.dataset.ready = '1';
+  if (q.get('dialog')) {
+    document.getElementById('hsize').textContent = size;
+    document.getElementById('help').hidden = false;
+    setTimeout(() => window.print(), 400);
+  }
+})();
+</script>
+</body>
+</html>

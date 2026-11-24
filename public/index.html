@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>De Tafelaar – Menu maker</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+  :root { --wine: #481723; --tan: #d6c19b; --paper: #f6f0e4; --line: #dccfb6; --ink: #2a2021; --muted: #7a6a5c; --ok: #4b6b2b; --bad: #b3261e; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { font: 14px/1.4 -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; color: var(--ink); background: var(--paper); display: flex; flex-direction: column; }
+  button, input, textarea { font: inherit; color: inherit; }
+
+  header { display: flex; align-items: center; gap: 14px; padding: 10px 16px; background: var(--wine); color: #fff; flex-wrap: wrap; }
+  header h1 { font: 400 19px 'Bevan', serif; margin: 0 6px 0 0; letter-spacing: .5px; }
+  .tabs { display: flex; background: rgba(255,255,255,.14); border-radius: 9px; padding: 3px; }
+  .tabs button { border: 0; background: none; color: #fff; padding: 7px 16px; border-radius: 7px; cursor: pointer; font-weight: 600; }
+  .tabs button.on { background: #fff; color: var(--wine); }
+  .grow { flex: 1; }
+  #status { font-size: 13px; opacity: .85; min-width: 70px; text-align: right; }
+  .btn { border: 1px solid rgba(255,255,255,.5); background: none; color: #fff; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  .btn:hover { background: rgba(255,255,255,.12); }
+  .btn.primary { background: #fff; color: var(--wine); border-color: #fff; }
+  .btn.primary:hover { background: #f3e9d6; }
+  .btn:disabled { opacity: .6; cursor: wait; }
+  .paper { font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  .paper select { font: inherit; font-weight: 600; border: 0; border-radius: 7px; padding: 7px 8px; background: rgba(255,255,255,.16); color: #fff; cursor: pointer; }
+  .paper select option { color: #222; }
+  #draft { display: none; background: #fff6d6; border: 1px solid #e6cf7a; color: #5c4a05; padding: 9px 12px; border-radius: 9px; margin-bottom: 12px; font-size: 13px; }
+  #draft b { display: block; margin-bottom: 2px; }
+  #draft a, .tools a { color: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; }
+  .tools { margin: 22px 2px 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 16px; }
+
+  main { flex: 1; display: flex; min-height: 0; }
+  #form { width: 430px; flex: none; overflow-y: auto; padding: 14px 14px 80px; border-right: 1px solid var(--line); background: #fbf7ee; }
+  #stage { flex: 1; overflow: auto; background: #6b5d55; padding: 22px; min-width: 0; }
+  #preview { display: flex; flex-direction: column; align-items: center; gap: 30px; width: max-content; margin: 0 auto; }
+  #preview .page { box-shadow: 0 3px 16px rgba(0,0,0,.4); flex: none; }
+  #preview .page.too-full { box-shadow: 0 0 0 5px var(--bad), 0 3px 16px rgba(0,0,0,.4); }
+  #preview .page { overflow: visible; }
+  #preview .page::before { content: 'Page ' attr(data-page) ' · ' attr(data-name); position: absolute; left: 0; top: -17pt; font: 600 9pt -apple-system, sans-serif; color: #f1e7d6; white-space: nowrap; }
+
+  #warn { display: none; background: #fdecea; border: 1px solid #f2b8b5; color: #7a1c16; padding: 9px 12px; border-radius: 9px; margin-bottom: 12px; font-size: 13px; }
+  #warn b { display: block; margin-bottom: 2px; }
+  #warn a { color: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; }
+  .hint { color: var(--muted); font-size: 12.5px; margin: 0 2px 12px; }
+  h2.pg { font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 18px 2px 7px; }
+
+  details.block { background: #fff; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; }
+  details.block.bad { border-color: var(--bad); }
+  details.block > summary { list-style: none; cursor: pointer; padding: 10px 12px; font-weight: 650; display: flex; align-items: center; gap: 8px; user-select: none; }
+  details.block > summary::-webkit-details-marker { display: none; }
+  details.block > summary::before { content: '▸'; color: var(--wine); font-size: 12px; width: 10px; }
+  details.block[open] > summary::before { content: '▾'; }
+  details.block > summary .count { margin-left: auto; font-weight: 400; color: var(--muted); font-size: 12.5px; }
+  details.block.bad > summary .count { color: var(--bad); font-weight: 600; }
+  .body { padding: 2px 12px 12px; }
+
+  label.f { display: block; font-size: 12px; color: var(--muted); margin: 6px 0 3px; }
+  input[type=text], textarea { width: 100%; border: 1px solid #d5c8b2; border-radius: 7px; padding: 6px 8px; background: #fff; }
+  input[type=text]:focus, textarea:focus { outline: 2px solid #b98a94; outline-offset: -1px; border-color: var(--wine); }
+  textarea { resize: vertical; min-height: 32px; line-height: 1.35; display: block; }
+
+  .group { border-top: 1px dashed var(--line); margin-top: 10px; padding-top: 8px; }
+  .group:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
+  .ghead { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+  .ghead input { font-weight: 650; }
+  .item { border: 1px solid #e6dcc8; border-radius: 9px; padding: 7px; margin-bottom: 6px; background: #fdfaf4; }
+  .item.off { opacity: .55; background: #f1ece2; }
+  .item.flash { animation: flash 1.2s; }
+  @keyframes flash { 0%, 40% { box-shadow: 0 0 0 3px #f2c200; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  .r1 { display: flex; gap: 6px; }
+  .r1 .price { width: 78px; flex: none; text-align: center; }
+  .item textarea { margin-top: 5px; font-size: 13px; }
+  .r3 { display: flex; align-items: center; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .r3 .acts { margin-left: auto; white-space: nowrap; }
+  .dotbtn { border: 1px solid #d5c8b2; background: #fff; border-radius: 20px; padding: 2px 8px 2px 6px; font-size: 11.5px; white-space: nowrap; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
+  .dotbtn i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,.25); }
+  .dotbtn.on { background: var(--wine); color: #fff; border-color: var(--wine); }
+  .ico { border: 0; background: none; cursor: pointer; padding: 3px 6px; border-radius: 6px; font-size: 14px; color: var(--muted); }
+  .ico:hover { background: #efe6d4; color: var(--ink); }
+  .ico.del:hover { background: #fdecea; color: var(--bad); }
+  .add { border: 1px dashed #c6b596; background: none; border-radius: 8px; padding: 6px 10px; cursor: pointer; color: var(--wine); font-weight: 600; width: 100%; }
+  .add:hover { background: #f6eedc; }
+  .add.small { width: auto; margin-top: 8px; font-weight: 500; color: var(--muted); }
+  #toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #23191a; color: #fff; padding: 11px 18px; border-radius: 10px; display: none; max-width: 80vw; box-shadow: 0 6px 24px rgba(0,0,0,.35); z-index: 10; }
+  @media (max-width: 900px) { main { flex-direction: column; } #form { width: 100%; max-height: 50vh; border-right: 0; border-bottom: 1px solid var(--line); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>De Tafelaar · Menu maker</h1>
+  <div class="tabs" id="tabs">
+    <button data-menu="diner">Dinner menu</button>
+    <button data-menu="drinks">Drinks menu</button>
+  </div>
+  <div class="grow"></div>
+  <span id="status"></span>
+  <button class="btn" id="save" title="Changes are saved automatically while you work. This saves right now.">Save</button>
+  <label class="paper" title="Paper size of the PDF. Every page gets a 5 mm white margin all round.">Paper
+    <select id="paper"><option value="A4">A4</option><option value="A5">A5</option></select></label>
+  <button class="btn primary" id="pdf">Make PDF</button>
+  <button class="btn" id="publish" hidden title="Put this menu on the website for everyone">Publish online</button>
+</header>
+<main>
+  <div id="form"></div>
+  <div id="stage"><div id="preview"></div></div>
+</main>
+<div id="toast"></div>
+
+<script src="defaults.js"></script>
+<script src="render.js"></script>
+<script src="store.js"></script>
+<script>
+(function () {
+  const esc = MenuRender.esc;
+  const $ = (s, el) => (el || document).querySelector(s);
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  const DOTS = [['veg', 'Veg', '#5d7a38'], ['gf', 'Gluten-free', '#d8c54b'], ['lf', 'Lactose-free', '#fbf9fb'], ['gfb', 'GF bread', '#6f39c0']];
+
+  // What you can edit, in the order it appears on the pages.
+  const LAYOUT = {
+    diner: [
+      ['Page 2 · Concept', [['text', 'topLabel', 'Small line at the top of the pages'], ['text', 'concept', 'Concept text', 1], ['sec', 'arrangementen', 'Arrangementen']]],
+      ['Page 3 · Borrel', [['text', 'dayLabel', 'Small line at the top'], ['sec', 'kazen', 'Kazen'], ['sec', 'charcuterie', 'Charcuterie'], ['sec', 'borrel', 'Borrel'], ['text', 'legendNote', 'Gluten-free bread surcharge (legend)']]],
+      ['Page 5 · Dishes', [['sec', 'koud', 'Koud'], ['sec', 'klassiekers', 'Klassiekers'], ['sec', 'warm', 'Warm']]],
+      ['Page 7 · Desserts', [['sec', 'desserts', 'Desserts'], ['text', 'wistTitle', '"Wist je dat?" title'], ['text', 'wist', '"Wist je dat?" text', 1]]]
+    ],
+    drinks: [
+      ['Page 1 · Cover', [['text', 'intro', 'Intro text', 1]]],
+      ['Page 2 · Cold & warm drinks', [['sec', 'koud', 'Koude dranken'], ['text', 'warmBlurb', 'Text under "Warme dranken"', 1], ['sec', 'koffie', 'Koffie & thee'], ['sec', 'specialeKoffie', 'Speciale koffie'], ['text', 'juiceNote', 'Brown box: juices', 1], ['text', 'syrupNote', 'Brown box: syrups', 1]]],
+      ['Page 3 · Wines', [['sec', 'wijnLinks', 'Wit, rood & rosé'], ['sec', 'wijnRechts', 'Bubbels & dessertwijnen'], ['text', 'wineNote1', 'Wine note 1', 1], ['text', 'wineNote2', 'Wine note 2', 1]]],
+      ['Page 4 · Beers & spirits', [['sec', 'bieren', 'Bieren'], ['text', 'beerBlurb', 'Beer text', 1], ['sec', 'sterk', 'Sterke dranken']]],
+      ['Page 5 · Cocktails', [['sec', 'cocktails', 'Cocktails & gin-tonics'], ['sec', 'mocktails', 'Mocktails'], ['text', 'cocktailNote', 'Cocktail note', 1]]],
+      ['All pages', [['text', 'footer', 'Line at the bottom of every page']]]
+    ]
+  };
+
+  let data = clone(window.MENU_DEFAULTS);
+  let menu = 'diner';
+  let local = false, draft = false;   // local = running on your own Mac; draft = unpublished edits in this browser
+  const paperChoice = {};
+  const open = new Set();   // which blocks are folded open
+
+  // ───── loading & saving ─────
+  async function load() { const r = await MenuStore.init(); data = r.data; local = r.local; draft = r.draft; }
+  let saveTimer = 0, saving = null;
+  function status(s) { $('#status').textContent = s; }
+  function changed() { status('Saving…'); clearTimeout(saveTimer); saveTimer = setTimeout(save, 500); schedulePreview(); }
+  function save() {
+    clearTimeout(saveTimer); saveTimer = 0;
+    saving = MenuStore.save(data).then(() => {
+      const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      status((local ? 'Saved ✓ ' : 'Saved on this device ✓ ') + t);
+      if (!local && !draft) { draft = true; showDraft(); }
+    }).catch(() => status('Could not save!'));
+    return saving;
+  }
+  function showDraft() {
+    const d = $('#draft'); if (!d) return;
+    d.style.display = draft && !local ? 'block' : 'none';
+    d.innerHTML = `<b>Your changes are only on this device</b>Other people still see the published menu. <a data-tool="download">Download the menu file</a> to share your version, or <a data-tool="discard">throw your changes away</a>.`;
+  }
+  function download() {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
+    a.download = 'menu-data.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    toast('Saved "menu-data.json" in your Downloads. This file is the whole menu: keep it as a backup, or put it in the "public" folder on GitHub to publish it.', 9000);
+  }
+  function upload() {
+    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json,application/json';
+    inp.onchange = async () => {
+      try {
+        const j = JSON.parse(await inp.files[0].text());
+        if (!MenuStore.valid(j)) throw 0;
+        data = MenuStore.fill(j); buildForm(); changed(); toast('Menu file loaded.', 4000);
+      } catch (e) { toast('That is not a menu file.', 5000); }
+    };
+    inp.click();
+  }
+
+  // ───── form ─────
+  function itemHTML(path, it) {
+    const dots = menu === 'diner' ? DOTS.map(([k, label, col]) =>
+      `<button type="button" class="dotbtn ${it.dots && it.dots.includes(k) ? 'on' : ''}" data-act="dot" data-dot="${k}"><i style="background:${col}"></i>${label}</button>`).join('') : '';
+    return `<div class="item ${it.hidden ? 'off' : ''}" data-path="${path}">
+      <div class="r1"><input type="text" data-f="name" placeholder="Name" value="${esc(it.name)}"><input type="text" class="price" data-f="price" placeholder="Price" value="${esc(it.price)}"></div>
+      <textarea data-f="desc" rows="1" placeholder="Description (optional)">${esc(it.desc)}</textarea>
+      <div class="r3">${dots}<span class="acts">
+        <button type="button" class="ico" data-act="up" title="Move up">↑</button><button type="button" class="ico" data-act="down" title="Move down">↓</button>
+        <button type="button" class="ico" data-act="hide" title="${it.hidden ? 'Hidden from the menu – click to show again' : 'Temporarily hide from the menu'}">${it.hidden ? '🚫' : '👁'}</button>
+        <button type="button" class="ico del" data-act="del" title="Delete">✕</button></span></div></div>`;
+  }
+  function secHTML(id, label) {
+    const s = data[menu].sections[id], multi = menu === 'drinks';
+    const n = s.groups.reduce((a, g) => a + g.items.filter((i) => !i.hidden).length, 0);
+    const key = `${menu}.${id}`;
+    return `<details class="block" data-block="${key}" ${open.has(key) ? 'open' : ''}><summary>${esc(label)}<span class="count">${n} item${n === 1 ? '' : 's'}</span></summary><div class="body">` +
+      (s.title ? `<label class="f">Heading on the menu</label><input type="text" data-f="title" data-path="${key}" value="${esc(s.title)}">` : '') +
+      `<div style="margin-top:8px">` + s.groups.map((g, gi) => `<div class="group" data-path="${key}.${gi}">` +
+        (multi ? `<div class="ghead"><input type="text" data-f="gtitle" placeholder="Group heading" value="${esc(g.title)}"><button type="button" class="ico del" data-act="delgroup" title="Delete this whole group">✕</button></div>` : '') +
+        g.items.map((it, ii) => itemHTML(`${key}.${gi}.${ii}`, it)).join('') +
+        `<button type="button" class="add" data-act="add">+ Add ${menu === 'diner' ? 'dish' : 'drink'}</button></div>`).join('') + `</div>` +
+      (multi ? `<button type="button" class="add small" data-act="addgroup" data-path="${key}">+ Add a new group with its own heading</button>` : '') +
+      `</div></details>`;
+  }
+  function textHTML(key, label, big) {
+    const k = `${menu}.texts.${key}`, v = data[menu].texts[key];
+    return `<details class="block" data-block="${k}" ${open.has(k) ? 'open' : ''}><summary>${esc(label)}</summary><div class="body">` +
+      (big ? `<textarea data-f="text" data-path="${k}" rows="5">${esc(v)}</textarea>` : `<input type="text" data-f="text" data-path="${k}" value="${esc(v)}">`) + `</div></details>`;
+  }
+  function buildForm() {
+    const f = $('#form'), top = f.scrollTop;
+    f.innerHTML = `<div id="draft"></div><div id="warn"></div><p class="hint">Click anything on the menu to edit it. Changes are saved automatically.</p>` +
+      LAYOUT[menu].map(([title, blocks]) => `<h2 class="pg">${esc(title)}</h2>` +
+        blocks.map(([kind, id, label, big]) => kind === 'sec' ? secHTML(id, label) : textHTML(id, label, big)).join('')).join('') +
+      `<div class="tools"><a data-tool="download">Download menu file (backup)</a><a data-tool="upload">Load a menu file</a><a data-tool="reset">Reset this menu to the original</a></div>`;
+    showDraft();
+    f.querySelectorAll('textarea').forEach(grow);
+    f.scrollTop = top;
+  }
+  function grow(ta) { ta.style.height = 'auto'; ta.style.height = Math.max(32, ta.scrollHeight + 2) + 'px'; }
+
+  function at(path) {       // "diner.koud.0.2" → the objects it points at
+    const [m, id, gi, ii] = path.split('.');
+    const sec = data[m].sections[id], group = gi != null ? sec.groups[+gi] : null;
+    return { sec, group, item: ii != null ? group.items[+ii] : null, gi: +gi, ii: +ii };
+  }
+
+  $('#form').addEventListener('toggle', (e) => {
+    const b = e.target.dataset && e.target.dataset.block; if (!b) return;
+    e.target.open ? open.add(b) : open.delete(b);
+    if (e.target.open) e.target.querySelectorAll('textarea').forEach(grow);
+  }, true);
+
+  $('#form').addEventListener('input', (e) => {
+    const el = e.target, f = el.dataset.f; if (!f) return;
+    if (el.tagName === 'TEXTAREA') grow(el);
+    if (f === 'text') { const p = el.dataset.path.split('.'); data[p[0]].texts[p[2]] = el.value; }
+    else if (f === 'title') at(el.dataset.path).sec.title = el.value;
+    else if (f === 'gtitle') at(el.closest('.group').dataset.path).group.title = el.value;
+    else at(el.closest('.item').dataset.path).item[f] = el.value;
+    changed();
+  });
+
+  $('#form').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const act = b.dataset.act;
+    if (act === 'addgroup') { at(b.dataset.path).sec.groups.push({ title: 'New group', items: [{ name: '', desc: '', price: '', dots: [] }] }); }
+    else if (act === 'add') {
+      const g = at(b.closest('.group').dataset.path).group;
+      g.items.push({ name: '', desc: '', price: '', dots: [] });
+      buildForm(); changed();
+      const rows = $(`.group[data-path="${b.closest('.group').dataset.path}"]`).querySelectorAll('.item');
+      const last = rows[rows.length - 1]; if (last) { last.scrollIntoView({ block: 'center' }); $('input', last).focus(); }
+      return;
+    } else if (act === 'delgroup') {
+      const p = b.closest('.group').dataset.path, r = at(p);
+      if (!confirm(`Delete the whole group "${r.group.title}" with its ${r.group.items.length} items?`)) return;
+      r.sec.groups.splice(r.gi, 1);
+    } else {
+      const r = at(b.closest('.item').dataset.path), list = r.group.items, i = r.ii;
+      if (act === 'dot') { const d = b.dataset.dot, cur = r.item.dots || []; r.item.dots = DOTS.map((x) => x[0]).filter((k) => (k === d) !== cur.includes(k)); }
+      if (act === 'hide') r.item.hidden = !r.item.hidden;
+      if (act === 'del') { if (r.item.name && !confirm(`Delete "${r.item.name}"?`)) return; list.splice(i, 1); }
+      if (act === 'up' && i > 0) list.splice(i - 1, 0, list.splice(i, 1)[0]);
+      if (act === 'down' && i < list.length - 1) list.splice(i + 1, 0, list.splice(i, 1)[0]);
+    }
+    buildForm(); changed();
+  });
+
+  // ───── preview ─────
+  let prevTimer = 0;
+  function schedulePreview() { clearTimeout(prevTimer); prevTimer = setTimeout(drawPreview, 120); }
+  function zoomToFit() {
+    const def = MenuRender.MENUS[menu], w = $('#stage').clientWidth - 44;
+    $('#preview').style.zoom = Math.max(0.35, Math.min(1.5, w / (def.w * 96 / 72)));
+  }
+  function drawPreview() {
+    const box = $('#preview');
+    MenuRender.render(menu, data, box, { editing: true });
+    zoomToFit();
+    const problems = MenuRender.fit(box, menu);
+    const labels = {}; LAYOUT[menu].forEach(([, bl]) => bl.forEach(([k, id, label]) => { if (k === 'sec') labels[id] = label; }));
+    document.querySelectorAll('details.block.bad').forEach((d) => d.classList.remove('bad'));
+    const warn = $('#warn');
+    if (problems.length) {
+      warn.style.display = 'block';
+      warn.innerHTML = `<b>Too much for the page</b>` + problems.map((p) => {
+        const d = $(`details[data-block="${menu}.${p.sec}"]`); if (d) d.classList.add('bad');
+        return `<a data-goto="${menu}.${p.sec}">${esc(labels[p.sec] || p.sec)}</a> on page ${p.page} runs off its space. Remove or hide an item, or shorten a description.`;
+      }).join('<br>');
+    } else warn.style.display = 'none';
+  }
+  function goTo(path) {
+    const parts = path.split('.');
+    const blockKey = parts[1] === 'texts' ? path : parts.slice(0, 2).join('.');
+    const d = $(`details[data-block="${blockKey}"]`); if (!d) return;
+    d.open = true; open.add(blockKey);
+    d.querySelectorAll('textarea').forEach(grow);
+    let target = d, focus = $('input,textarea', d);
+    if (parts[1] !== 'texts' && parts.length === 4) { target = $(`.item[data-path="${path}"]`, d) || d; focus = $('input', target); }
+    else if (parts[1] !== 'texts' && parts.length === 3) { target = $(`.group[data-path="${path}"]`, d) || d; focus = $('input', target); }
+    target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    if (target.classList.contains('item')) { target.classList.remove('flash'); void target.offsetWidth; target.classList.add('flash'); }
+    if (focus) setTimeout(() => focus.focus({ preventScroll: true }), 250);
+  }
+  $('#preview').addEventListener('click', (e) => { const p = e.target.closest('[data-p]'); if (p) goTo(p.dataset.p); });
+  $('#form').addEventListener('click', (e) => {
+    const a = e.target.closest('[data-goto]'); if (a) return goTo(a.dataset.goto);
+    const t = e.target.closest('[data-tool]'); if (!t) return;
+    const tool = t.dataset.tool;
+    if (tool === 'download') download();
+    if (tool === 'upload') upload();
+    if (tool === 'reset') {
+      if (!confirm(`Throw away ALL changes to the ${MenuRender.MENUS[menu].label.toLowerCase()} and go back to the original?`)) return;
+      data[menu] = clone(window.MENU_DEFAULTS[menu]); buildForm(); changed();
+    }
+    if (tool === 'discard') {
+      if (!confirm('Throw away your changes on this device and show the published menu again?')) return;
+      clearTimeout(saveTimer); data = MenuStore.discard(); draft = false; buildForm(); drawPreview(); status('');
+    }
+  });
+  window.addEventListener('resize', () => { zoomToFit(); });
+
+  // ───── top bar ─────
+  function setMenu(m) {
+    menu = m;
+    document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('on', b.dataset.menu === m));
+    $('#paper').value = paperChoice[m] || MenuRender.MENUS[m].paper;
+    buildForm(); drawPreview(); $('#stage').scrollTop = 0; $('#form').scrollTop = 0;
+  }
+  $('#tabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setMenu(b.dataset.menu); });
+  $('#save').addEventListener('click', async () => {
+    await save();
+    toast(local ? 'Saved. Your menu is also saved automatically while you work, and a copy is kept every 10 minutes in the data/history folder.'
+      : 'Saved on this device. It is also saved automatically while you work. Use "Download menu file" at the bottom left for a backup you can keep.', 7000);
+  });
+  // never lose the last few keystrokes: save when the tab is closed, hidden or reloaded
+  const flush = () => { if (saveTimer) { clearTimeout(saveTimer); saveTimer = 0; MenuStore.save(data, true).catch(() => {}); } };
+  window.addEventListener('pagehide', flush);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+  $('#paper').addEventListener('change', (e) => { paperChoice[menu] = e.target.value; });
+  let toastTimer = 0;
+  function toast(msg, ms) { const t = $('#toast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(toastTimer); if (ms) toastTimer = setTimeout(() => (t.style.display = 'none'), ms); }
+  $('#pdf').addEventListener('click', async () => {
+    const btn = $('#pdf'), size = $('#paper').value;
+    if (document.querySelector('.page.too-full') && !confirm('Some text runs off its space (red outline). Make the PDF anyway?')) return;
+    if (saveTimer) await save(); else if (saving) await saving;
+    const printUrl = `print.html?menu=${menu}&size=${size}&dialog=1`;
+    if (!local) { window.open(printUrl, '_blank'); return; }   // on the website the browser makes the PDF
+    btn.disabled = true; toast('Making the PDF…');
+    try {
+      const r = await fetch(`/api/pdf?menu=${menu}&size=${size}`, { method: 'POST' }), j = await r.json();
+      if (!r.ok) throw new Error(j.error || 'failed');
+      toast(`Done — "${j.file}" is in the PDF folder and is opening now.`, 7000);
+    } catch (err) {
+      toast('Could not make the PDF (' + err.message + '). Opening the print window instead.', 7000);
+      window.open(printUrl, '_blank');
+    }
+    btn.disabled = false;
+  });
+  $('#publish').addEventListener('click', async () => {
+    if (!confirm('Put the menu as it is now on the website, for everyone to see?')) return;
+    const btn = $('#publish'); btn.disabled = true; toast('Publishing…');
+    try {
+      if (saveTimer) await save(); else if (saving) await saving;
+      const r = await fetch('/api/publish', { method: 'POST' }), j = await r.json();
+      if (!r.ok) throw new Error(j.error || 'failed');
+      toast(j.changed ? 'Published. The website updates itself in about a minute.' : 'Nothing new to publish — the website already has this menu.', 7000);
+    } catch (err) { toast('Could not publish: ' + err.message, 10000); }
+    btn.disabled = false;
+  });
+
+  load().then(async () => {
+    $('#publish').hidden = !local;
+    setMenu('diner');
+    status(draft ? 'Saved on this device' : '');
+    await MenuStore.fonts();
+    drawPreview();
+  });
+})();
+</script>
+</body>
+</html>

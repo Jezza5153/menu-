@@ -1,0 +1,9 @@
+# made on your own Mac, not part of the website
+PDF/
+data/
+originals/
+.claude/
+.DS_Store
+__pycache__/
+# Microsoft fonts used by the drinks card: fine on your own Mac, not allowed online
+public/assets/fonts/*.ttf

@@ -1,0 +1,1237 @@
+{
+ "version": 1,
+ "diner": {
+  "texts": {
+   "topLabel": "Diner vanaf 17:00",
+   "dayLabel": "Beschikbaar hele dag",
+   "concept": "Bij De Tafelaar draait alles om aandacht. Aandacht voor smaak, voor het product, voor duurzaamheid en natuurlijk voor onze gasten.\nWe houden van samen genieten. Uit eten met vrienden, een avond uitgebreid tafelen of juist spontaan aanschuiven aan onze gezamenlijke tafel. Alles kan, niets hoeft.\nOns concept is simpel: bestel 2 à 3 gerechtjes per persoon, dit is genoeg voor een avondmaaltijd. Een beetje à la tapas, dus: lekker delen en gewoon kiezen waar je zin in hebt. Dan zetten wij het met plezier voor je op tafel.",
+   "wistTitle": "Wist je dat?",
+   "wist": "Wist je dat we bij De Tafelaar ook catering verzorgen voor alle soorten evenementen? Van (kantoor)lunch tot borrel of diner, we denken graag mee. En als je een fijne plek zoekt: onze locatie is ook te boeken voor leuke partijen!\nNieuwsgierig naar de opties (catering of zaal)? Laat het even weten.",
+   "legendNote": "1,50 extra"
+  },
+  "sections": {
+   "arrangementen": {
+    "title": "ARRANGEMENTEN",
+    "groups": [
+     {
+      "title": "",
+      "items": [
+       {
+        "name": "Lekker Borrelen",
+        "desc": "Een leuk charcuterie- en kaasplankje\nMinimaal 2 personen (P.P.)",
+        "price": "12,50",
+        "dots": []
+       },
+       {
+        "name": "Chef's choice",
+        "desc": "Uitgebreid genieten",
+        "price": "48",
+        "dots": []
+       },
+       {
+        "name": "Bijpassend wijnarrangement",
+        "desc": "",
+        "price": "28",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "kazen": {
+    "title": "KAZEN",
+    "groups": [
+     {
+      "title": "",
+      "items": [
+       {
+        "name": "Geitenbrie",
+        "desc": "Vijgenchutney - Sfoglie",
+        "price": "7",
+        "dots": [
+         "veg"
+        ]
+       },
+       {
+        "name": "Brokkel Kaas",
+        "desc": "Biermosterd - Dadelbrood",
+        "price": "7,50",
+        "dots": [
+         "veg"
+        ]
+       },
+       {
+        "name": "Oudwijker Fiore",
+        "desc": "Vijgenchutney - Sfoglie",
+        "price": "8,50",
+        "dots": [
+         "veg"
+        ]
+       },
+       {
+        "name": "Jan zijn kaasje",
+        "desc": "wisselende kaas met bijpassende garnituren",
+        "price": "8",
+        "dots": [
+         "veg"
+        ]
+       },
+       {
+        "name": "Chefs Blauwtje",
+        "desc": "wisselende kaas met bijpassende garnituren",
+        "price": "8,50",
+        "dots": [
+         "veg"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "charcuterie": {
+    "title": "CHARCUTERIE",
+    "groups": [
+     {
+      "title": "",
+      "items": [
+       {
+        "name": "Venkelworstje",
+        "desc": "Biologisch rundvlees - Kesbeke Zuur",
+        "price": "7",
+        "dots": [
+         "gf",
+         "lf"
+        ]
+       },
+       {
+        "name": "Serrano Ham",
+        "desc": "Geconfijte Knoflook - Croutons",
+        "price": "8",
+        "dots": [
+         "lf",
+         "gfb"
+        ]
+       },
+       {
+        "name": "Peper Fuet",
+        "desc": "Varkens vlees - Kesbeke Zuur",
+        "price": "7",
+        "dots": [
+         "gf",
+         "lf"
+        ]
+       },
+       {
+        "name": "Truffel Fuet",
+        "desc": "Kesbeke Zuur",
+        "price": "8,50",
+        "dots": [
+         "gf",
+         "lf"
+        ]
+       },
+       {
+        "name": "Chefs favorietje",
+        "desc": "Vraag de bediening voor meer informatie",
+        "price": "M.P",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "borrel": {
+    "title": "BORREL",
+    "groups": [
+     {
+      "title": "",
+      "items": [
+       {
+        "name": "Peppadews",
+        "desc": "Gevulde Pepertjes met Roomkaas",
+        "price": "6,50",
+        "dots": [
+         "veg",
+         "gf"
+        ]
+       },
+       {
+        "name": "Olijven",
+        "desc": "In De Tafelaars Kruidenmix",
+        "price": "4,50",
+        "dots": [
+         "veg",
+         "gf",
+         "lf"
+        ]
+       },
+       {
+        "name": "Gerookte Notenmix",
+        "desc": "",
+        "price": "3,50",
+        "dots": [
+         "veg",
+         "lf"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "koud": {
+    "title": "KOUD",
+    "groups": [
+     {
+      "title": "",
+      "items": [
+       {
+        "name": "Miso Zalm",
+        "desc": "Kokos dressing - krokantje - Nori",
+        "price": "15,50",
+        "dots": [
+         "lf",
+         "gf"
+        ]
+       },
+       {
+        "name": "Bieten Carpaccio",
+        "desc": "Geitenkaas - Walnoot - Honing",
+        "price": "10,50",
+        "dots": [
+         "veg",
+         "gf"
+        ]
+       },
+       {
+        "name": "Broodplankje",
+        "desc": "Met verschillende dips",
+        "price": "7,50",
+        "dots": [
+         "veg",
+         "gfb"
+        ]
+       },
+       {
+        "name": "Watermeloen",
+        "desc": "Munt - Citroen - Feta",
+        "price": "13",
+        "dots": [
+         "veg",
+         "gf"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "klassiekers": {
+    "title": "KLASSIEKERS",
+    "groups": [
+     {
+      "title": "",
+      "items": [
+       {
+        "name": "Gevulde Eitjes",
+        "desc": "Mayonaise - Bieslook -\n3 stuks",
+        "price": "7,50",
+        "dots": [
+         "veg",
+         "gf",
+         "lf"
+        ]
+       },
+       {
+        "name": "Carpaccio",
+        "desc": "Biologisch Rundvlees - Structuren van eigeel - Truffel",
+        "price": "12,50",
+        "dots": [
+         "gf",
+         "lf"
+        ]
+       },
+       {
+        "name": "Vitello Tonnato",
+        "desc": "Biologisch Kalfsvlees - Tonijnmayonaise - Kappertjes",
+        "price": "12,50",
+        "dots": [
+         "lf",
+         "gf"
+        ]
+       },
+       {
+        "name": "Bruschetta",
+        "desc": "Knoflook - Olijfolie - Tomaat -\n3 stuks (1 extra €3) met serrano is €1.50 per stuk",
+        "price": "9",
+        "dots": [
+         "veg",
+         "lf",
+         "gfb"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "warm": {
+    "title": "WARM",
+    "groups": [
+     {
+      "title": "",
+      "items": [
+       {
+        "name": "Spare Ribs",
+        "desc": "Van het bot vallend - Sweet & Spicy",
+        "price": "13,50",
+        "dots": [
+         "lf",
+         "gf"
+        ]
+       },
+       {
+        "name": "Runderballetjes",
+        "desc": "Biologisch Rund - Gremolata - Tomatensaus",
+        "price": "11",
+        "dots": []
+       },
+       {
+        "name": "Miso Groententuin",
+        "desc": "Munt - Doperwten - Miso - Mediteraanse groenten",
+        "price": "11,50",
+        "dots": [
+         "veg",
+         "lf"
+        ]
+       },
+       {
+        "name": "Ossobuco",
+        "desc": "Polenta - Gremolata - Demi Glace",
+        "price": "13,50",
+        "dots": []
+       },
+       {
+        "name": "Bao Bun Inari",
+        "desc": "Sriracha Mayonaise - bosui",
+        "price": "12,50",
+        "dots": [
+         "veg",
+         "lf"
+        ]
+       },
+       {
+        "name": "Bao Bun Pulled pork",
+        "desc": "Sriracha Mayonaise - bosui",
+        "price": "12,50",
+        "dots": [
+         "lf"
+        ]
+       },
+       {
+        "name": "Japanse Curry",
+        "desc": "Seizoensgroente - Udon noodles",
+        "price": "11,50",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "desserts": {
+    "title": "DESSERTS",
+    "groups": [
+     {
+      "title": "",
+      "items": [
+       {
+        "name": "Parfait",
+        "desc": "Smaak van de week",
+        "price": "8,50",
+        "dots": [
+         "veg",
+         "gf"
+        ]
+       },
+       {
+        "name": "Dame Blanche",
+        "desc": "Warme Chocolade - Vanille ijs - Slagroom",
+        "price": "8,50",
+        "dots": [
+         "veg",
+         "gf"
+        ]
+       },
+       {
+        "name": "Snicker",
+        "desc": "Snicker, maar dan vegan.",
+        "price": "8,50",
+        "dots": [
+         "veg",
+         "gf",
+         "lf"
+        ]
+       },
+       {
+        "name": "Local Dessert",
+        "desc": "Vraag de bediening voor meer informatie.",
+        "price": "9",
+        "dots": [
+         "veg"
+        ]
+       },
+       {
+        "name": "Kaasplankje",
+        "desc": "Selectie van 3 verschillende kazen.",
+        "price": "15",
+        "dots": [
+         "veg"
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "drinks": {
+  "texts": {
+   "intro": "Bij De Tafelaar draait een drankje om verbinding, net zoals een goed gesprek.\nDaarom vind je op onze drankkaart geen standaardlijstje, maar een zorgvuldig samengesteld aanbod vol karakter en verhalen. Van lokale bieren en biologische wijnen tot creatieve cocktails, en van ambachtelijk gebrande koffie tot kruidenrijke thee: elk drankje krijgt de aandacht die het verdient.\nWaar mogelijk gebruiken we biologische of lokaal geteelde ingrëdienten en garneringen, omdat we geloven in eerlijke producten met respect voor mens, dier en natuur.",
+   "warmBlurb": "Onze koffie van Boot Koffie en thee van Clipper en Wilder Land zijn met zorg geselecteerd, biologisch, eerlijk en vol karakter. En al onze koffievarianten zijn ook verkrijgbaar als decafé en/of met havermelk.",
+   "juiceNote": "Biologisch en/of lokaal geoogst. Onze sappen komen rechtstreeks van de boomgaard en smaken zoals fruit bedoeld is!",
+   "syrupNote": "Lokaal, puur en net dat beetje extra: onze Roze Bunker siropen maken elk drankje bijzonder.",
+   "wineNote1": "Naast deze wijnen hebben we nog een leuke selectie wijnen op de wijnkaart per fles of halve fles.",
+   "wineNote2": "Biologisch en vol karakter: onze wijnen laten je genieten van pure smaken, van frisse witte tot diepe rode wijnen, met aandacht voor mens en natuur!",
+   "beerBlurb": "Onze bieren zijn met zorg geselecteerd en vol karakter. Van onze eigen Tafelaar Pils en Weizen tot bijzondere creaties van lokale brouwerijen: elk glas vertelt een verhaal van vakmanschap en passie. Geniet van vertrouwde smaken of ontdek een nieuwe favoriet, allemaal met aandacht gebrouwen en rechtstreeks van dichtbij.\n\nVraag een van onze collega’s naar onze wissel/seizoenstap. Naast onze selectie bieren zijn er ook leuke flessen van 750 ml te bestellen.",
+   "cocktailNote": "Onze cocktails zijn met zorg gemixt en rijk aan karakter, met pure ingrediënten, verrassende smaken en een vleugje creativiteit. Liever zonder alcohol? Onze mocktails zijn net zo doordacht en sprankelend.",
+   "footer": "De Tafelaar"
+  },
+  "sections": {
+   "koud": {
+    "title": "KOUDE DRANKEN",
+    "groups": [
+     {
+      "title": "Frisdranken",
+      "items": [
+       {
+        "name": "Cola (Biologisch)",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Cola zero",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Sinas (Biologisch)",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Tonic (Biologisch)",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Ijsthee peach (Biologisch)",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Coca Cola",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Coca Cola zero",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Spa blauw/rood",
+        "desc": "",
+        "price": "3",
+        "dots": []
+       },
+       {
+        "name": "Spa blauw/rood (75 cl)",
+        "desc": "",
+        "price": "6,75",
+        "dots": []
+       },
+       {
+        "name": "Fuze tea green",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Fanta Cassis",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Royal Bliss Bitter lemon",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Royal Bliss Ginger ale",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Zuivelrijck Chocomelk",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Fever Tree Gingerbeer",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       },
+       {
+        "name": "Fever Tree Indian Tonic",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       },
+       {
+        "name": "Fever Tree Tonic Clementine & Cinnamon",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Vruchtensappen",
+      "items": [
+       {
+        "name": "Appelsap (Biologisch)",
+        "desc": "",
+        "price": "3,50",
+        "dots": []
+       },
+       {
+        "name": "Appelschorle (Biologisch, Appelsap & Bruiswater)",
+        "desc": "",
+        "price": "3,50",
+        "dots": []
+       },
+       {
+        "name": "Jus d’Orange",
+        "desc": "",
+        "price": "4",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Roze Bunker siropen",
+      "items": [
+       {
+        "name": "Citrus Movement plat/bruisend",
+        "desc": "",
+        "price": "3,50",
+        "dots": []
+       },
+       {
+        "name": "Gekke Bessen plat/bruisend",
+        "desc": "",
+        "price": "3,50",
+        "dots": []
+       },
+       {
+        "name": "Madame Gember plat/bruisend",
+        "desc": "",
+        "price": "3,50",
+        "dots": []
+       },
+       {
+        "name": "Bitter Bloed plat/bruisend",
+        "desc": "",
+        "price": "3,50",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "koffie": {
+    "title": "",
+    "groups": [
+     {
+      "title": "Koffie",
+      "items": [
+       {
+        "name": "Koffie",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Espresso (enkel)",
+        "desc": "",
+        "price": "3,20",
+        "dots": []
+       },
+       {
+        "name": "Espresso (dubbel)",
+        "desc": "",
+        "price": "4,20",
+        "dots": []
+       },
+       {
+        "name": "Cappuccino",
+        "desc": "",
+        "price": "3,70",
+        "dots": []
+       },
+       {
+        "name": "Latte Macchiato",
+        "desc": "",
+        "price": "4,20",
+        "dots": []
+       },
+       {
+        "name": "Flat White",
+        "desc": "",
+        "price": "4,70",
+        "dots": []
+       },
+       {
+        "name": "Koffie verkeerd",
+        "desc": "",
+        "price": "3,70",
+        "dots": []
+       },
+       {
+        "name": "Chai Latte",
+        "desc": "",
+        "price": "4,70",
+        "dots": []
+       },
+       {
+        "name": "Warme Chocomelk",
+        "desc": "",
+        "price": "3,50",
+        "dots": []
+       },
+       {
+        "name": "+   slagroom",
+        "desc": "",
+        "price": "0,50",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Thee",
+      "items": [
+       {
+        "name": "Thee (diverse smaken)",
+        "desc": "",
+        "price": "3",
+        "dots": []
+       },
+       {
+        "name": "Verse Munt",
+        "desc": "",
+        "price": "4",
+        "dots": []
+       },
+       {
+        "name": "Verse Gember",
+        "desc": "",
+        "price": "4",
+        "dots": []
+       },
+       {
+        "name": "Verse Munt & Gember",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       },
+       {
+        "name": "Regenboogthee",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       },
+       {
+        "name": "Gember & Sinaasappel met Kaneel",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "specialeKoffie": {
+    "title": "",
+    "groups": [
+     {
+      "title": "Speciale Koffie",
+      "items": [
+       {
+        "name": "Ijskoffie",
+        "desc": "",
+        "price": "4,70",
+        "dots": []
+       },
+       {
+        "name": "Italian Coffee",
+        "desc": "",
+        "price": "8,75",
+        "dots": []
+       },
+       {
+        "name": "French Coffee",
+        "desc": "",
+        "price": "8,75",
+        "dots": []
+       },
+       {
+        "name": "Spanish Coffee",
+        "desc": "",
+        "price": "8,75",
+        "dots": []
+       },
+       {
+        "name": "Irish Coffee",
+        "desc": "",
+        "price": "8,75",
+        "dots": []
+       },
+       {
+        "name": "Baileys Coffee",
+        "desc": "",
+        "price": "8,75",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "wijnLinks": {
+    "title": "",
+    "groups": [
+     {
+      "title": "Witte wijn",
+      "items": [
+       {
+        "name": "Viognier (Languedoc, Frankrijk)",
+        "desc": "Fris, bloemig, perzik, abrikoos, tropisch fruit, droog\nGlas 5,75 - Fles 29",
+        "price": "5,75",
+        "dots": []
+       },
+       {
+        "name": "Pinot Grigio ‘Berico’ (Veneto Italië)",
+        "desc": "Fris, aperitief, kruisbesje, peertje, perzik, zuurtjes\nGlas 6,50 - Fles 32,50",
+        "price": "6,50",
+        "dots": []
+       },
+       {
+        "name": "Rioja Blanco (Domeco de Jarauta, Rioja, Spanje)",
+        "desc": "Garnacha/Viura, houttoets, elegant, rijk, zacht\nGlas 7 - Fles 35",
+        "price": "7",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Rode wijn",
+      "items": [
+       {
+        "name": "Merlot (Languedoc, Frankrijk)",
+        "desc": "Soepel, fruitig, bessen, bramen, rond, zacht, elegant\nGlas 5,75 - Fles 29",
+        "price": "5,75",
+        "dots": []
+       },
+       {
+        "name": "Montepulciano d‘Abruzzo (El Origini, Abruzzo, Italië)",
+        "desc": "Krachtig, rond, zachte tannines, bosaardbei, blauwe bes, smaakvol\nGlas 6,50 - Fles 32,50",
+        "price": "6,50",
+        "dots": []
+       },
+       {
+        "name": "Rioja ‘Vendimia Seleccionada’ (Domeca de Jarauta, Rioja, Spanje)",
+        "desc": "Rijk, hout, vanille, rood fruit, viooltjes, mineraal, gebalanceerd\nGlas 7,50 - Fles 37,50",
+        "price": "7,50",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Rosé",
+      "items": [
+       {
+        "name": "Grenache (Languedoc, Frankrijk)",
+        "desc": "Licht, fruitig, aardbei, framboos, bessen, kruidig, zacht, halfdroog\nGlas 5,75 - Fles 29",
+        "price": "5,75",
+        "dots": []
+       },
+       {
+        "name": "Mon Minet (Bordeaux, Frankrijk)",
+        "desc": "Bloemen, anijs, sappig, kruisbes, framboos, souplesse\nGlas 6,50 - Fles 32,50",
+        "price": "6,50",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "wijnRechts": {
+    "title": "",
+    "groups": [
+     {
+      "title": "Bubbels",
+      "items": [
+       {
+        "name": "Prosecco Spumante (wit) -Villa Braida, Veneto",
+        "desc": "Glas 6,50 - Fles 39,50",
+        "price": "6,50",
+        "dots": []
+       },
+       {
+        "name": "Prosecco Spumante (rosé) - Villa Braida, Veneto",
+        "desc": "Fles 39,50",
+        "price": "39,50",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Dessertwijnen",
+      "items": [
+       {
+        "name": "Bonjardim fortified 2012",
+        "desc": "Glas 7 - Fles 48",
+        "price": "7",
+        "dots": []
+       },
+       {
+        "name": "Kopke Ruby Port (Douro, Portugal)",
+        "desc": "Glas 6 - Fles 52",
+        "price": "6",
+        "dots": []
+       },
+       {
+        "name": "Tawny Port (Douro, Portugal)",
+        "desc": "Glas 6,50 - Fles 55",
+        "price": "6,50",
+        "dots": []
+       },
+       {
+        "name": "LBV 2018 Port (Douro, Portugal)",
+        "desc": "Glas 7,50 - Fles 64",
+        "price": "7,50",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "bieren": {
+    "title": "BIEREN",
+    "groups": [
+     {
+      "title": "Van de tap",
+      "items": [
+       {
+        "name": "Tafelaar Pils (25cl)",
+        "desc": "",
+        "price": "3,50",
+        "dots": []
+       },
+       {
+        "name": "Tafelaar Pils (50cl)",
+        "desc": "",
+        "price": "6,75",
+        "dots": []
+       },
+       {
+        "name": "Tafelaar Weizen (33cl)",
+        "desc": "",
+        "price": "6",
+        "dots": []
+       },
+       {
+        "name": "Tafelaar Weizen (50cl)",
+        "desc": "",
+        "price": "9,50",
+        "dots": []
+       },
+       {
+        "name": "Amersfoortse Wisseltap (33cl) Zie bord voor prijs",
+        "desc": "",
+        "price": "",
+        "dots": []
+       },
+       {
+        "name": "Seizoenswissel Tap (33cl) Zie bord voor prijs",
+        "desc": "",
+        "price": "",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Bieren op fles of blik",
+      "items": [
+       {
+        "name": "‘t Mirakel Lieve Vrouw (blond, 6.4%)",
+        "desc": "",
+        "price": "6,50",
+        "dots": []
+       },
+       {
+        "name": "Eem Tierig (IPA, 6.7%)",
+        "desc": "",
+        "price": "7",
+        "dots": []
+       },
+       {
+        "name": "Rockcity Double Date (DIPA, 7.5%)",
+        "desc": "",
+        "price": "8",
+        "dots": []
+       },
+       {
+        "name": "Drie ringen Dubbel (dubbel, 6.5%)",
+        "desc": "",
+        "price": "7",
+        "dots": []
+       },
+       {
+        "name": "Drie ringen Silver (dunkelweizen, 5%)",
+        "desc": "",
+        "price": "7",
+        "dots": []
+       },
+       {
+        "name": "’t Mirakel de Vondst (triple, 8.4%)",
+        "desc": "",
+        "price": "6,50",
+        "dots": []
+       },
+       {
+        "name": "Eem Potig (stout, 7.5%)",
+        "desc": "",
+        "price": "7",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Alcoholvrije bieren",
+      "items": [
+       {
+        "name": "Hertog Jan 0.0%",
+        "desc": "",
+        "price": "4",
+        "dots": []
+       },
+       {
+        "name": "Amstel Radler 0.0%",
+        "desc": "",
+        "price": "4",
+        "dots": []
+       },
+       {
+        "name": "vandeStreek Playground IPA 0.0%",
+        "desc": "",
+        "price": "6,50",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "sterk": {
+    "title": "STERKE DRANKEN",
+    "groups": [
+     {
+      "title": "Jenever",
+      "items": [
+       {
+        "name": "Jajem Organic, jonge jenever",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       },
+       {
+        "name": "The Stillery’s Ouwe Spelt Jenever",
+        "desc": "",
+        "price": "7",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Whisky’s",
+      "items": [
+       {
+        "name": "The Famous Grouse",
+        "desc": "",
+        "price": "5",
+        "dots": []
+       },
+       {
+        "name": "Jameson",
+        "desc": "",
+        "price": "5,50",
+        "dots": []
+       },
+       {
+        "name": "Talisker Skye",
+        "desc": "",
+        "price": "6,50",
+        "dots": []
+       },
+       {
+        "name": "Millstone Rye 92",
+        "desc": "",
+        "price": "7,50",
+        "dots": []
+       },
+       {
+        "name": "Millstone Rye 100",
+        "desc": "",
+        "price": "11",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Gedistilleerd",
+      "items": [
+       {
+        "name": "Tafelaartje",
+        "desc": "",
+        "price": "5",
+        "dots": []
+       },
+       {
+        "name": "Erisoff Vodka",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       },
+       {
+        "name": "Bacardi Carte Blanca",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       },
+       {
+        "name": "Bacardi Carte Negra",
+        "desc": "",
+        "price": "5,50",
+        "dots": []
+       },
+       {
+        "name": "Sierra Silver Tequilla",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Likeuren",
+      "items": [
+       {
+        "name": "AMICI Limoncello",
+        "desc": "",
+        "price": "6",
+        "dots": []
+       },
+       {
+        "name": "Dik en Schil Passievrucht",
+        "desc": "",
+        "price": "7",
+        "dots": []
+       },
+       {
+        "name": "Dik en Schil Orangecello",
+        "desc": "",
+        "price": "7",
+        "dots": []
+       },
+       {
+        "name": "Amaretto Disaronno",
+        "desc": "",
+        "price": "5",
+        "dots": []
+       },
+       {
+        "name": "Malibu",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       },
+       {
+        "name": "Licor 43",
+        "desc": "",
+        "price": "5",
+        "dots": []
+       },
+       {
+        "name": "Tia Maria",
+        "desc": "",
+        "price": "5",
+        "dots": []
+       },
+       {
+        "name": "Kahlúa",
+        "desc": "",
+        "price": "5",
+        "dots": []
+       },
+       {
+        "name": "Cointreau",
+        "desc": "",
+        "price": "6",
+        "dots": []
+       },
+       {
+        "name": "Jägermeister",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       },
+       {
+        "name": "Salmari",
+        "desc": "",
+        "price": "4,50",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "cocktails": {
+    "title": "",
+    "groups": [
+     {
+      "title": "Cocktails",
+      "items": [
+       {
+        "name": "Aperol Spritz",
+        "desc": "Aperol, Cava, Bruiswater & Sinaasappel",
+        "price": "9,50",
+        "dots": []
+       },
+       {
+        "name": "Limoncello Spritz",
+        "desc": "Limoncello, Cava, Bruiswater, Limoen & Citroen",
+        "price": "9,50",
+        "dots": []
+       },
+       {
+        "name": "Passie Spritz",
+        "desc": "Passiecello, Cava, Bruiswater & Passievrucht",
+        "price": "9,50",
+        "dots": []
+       },
+       {
+        "name": "Moscow Mule",
+        "desc": "Vodka, Gingerbeer & Limoen",
+        "price": "10,50",
+        "dots": []
+       },
+       {
+        "name": "Dark ‘n Stormy",
+        "desc": "Donkere rum, Gingerbeer & Limoen",
+        "price": "10,50",
+        "dots": []
+       },
+       {
+        "name": "Mojito",
+        "desc": "Witte rum, Limoensap, Bruiswater, Rietsuiker & Munt",
+        "price": "11",
+        "dots": []
+       },
+       {
+        "name": "Pornstar Martini",
+        "desc": "Vodka, Passievruchtsap, Limoensap & Vanillesuiker",
+        "price": "12,50",
+        "dots": []
+       },
+       {
+        "name": "Espresso Martini",
+        "desc": "Vodka, Kahlúa, Espresso & Caramelsiroop",
+        "price": "12,50",
+        "dots": []
+       }
+      ]
+     },
+     {
+      "title": "Gin & Tonic’s",
+      "items": [
+       {
+        "name": "Gin & Tonic",
+        "desc": "Gin, Tonic & Komkommer",
+        "price": "9,50",
+        "dots": []
+       },
+       {
+        "name": "Gin & Tonic Citrus",
+        "desc": "Lemon Gin, Tonic, Limoen & Citroen",
+        "price": "10,50",
+        "dots": []
+       },
+       {
+        "name": "Gin & Tonic Herfstig",
+        "desc": "Gin, Clementine & Cinnamon Tonic, Sinaasappel & Kaneel",
+        "price": "10,50",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   },
+   "mocktails": {
+    "title": "",
+    "groups": [
+     {
+      "title": "Mocktails",
+      "items": [
+       {
+        "name": "Gin & Tonic 0.0%",
+        "desc": "Gin 0.0%, Tonic & Komkommer",
+        "price": "9",
+        "dots": []
+       },
+       {
+        "name": "Ginger Mule",
+        "desc": "Gingerbeer, Limoensap & Limoen",
+        "price": "8,50",
+        "dots": []
+       },
+       {
+        "name": "Virgin Mojito",
+        "desc": "Limoensap, Ginger ale, Bruiswater, Rietsuiker & Munt",
+        "price": "9",
+        "dots": []
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

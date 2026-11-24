@@ -1,0 +1,105 @@
+/* De Tafelaar house style — shared by the editor preview and the printed PDF.
+   All sizes are in pt and were measured from the original PDFs. */
+@import url('https://fonts.googleapis.com/css2?family=Bevan&family=Sorts+Mill+Goudy:ital@0;1&display=block');
+@font-face { font-family: 'Tafelaar Bernard'; src: url('assets/fonts/BernardMTCondensed.ttf'); font-display: block; }
+@font-face { font-family: 'Tafelaar Goudy'; src: url('assets/fonts/Goudy Old Style.ttf'); font-display: block; }
+
+.page {
+  --tan: #d6c19b; --tan-dark: #bea271; --wine: #481723; --mauve: #a38b91; --frame: #5f3817; --ink: #231f20;
+  position: relative; overflow: hidden; box-sizing: border-box;
+  background: var(--tan); color: var(--ink);
+  font-family: 'Sorts Mill Goudy', 'Goudy Old Style', Georgia, serif;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  font-kerning: normal; text-rendering: geometricPrecision;
+}
+.page * { box-sizing: border-box; margin: 0; }
+.page .abs { position: absolute; }
+.page .panel { position: absolute; background: var(--tan-dark); }
+.page .frame { position: absolute; border: 1.5pt solid var(--frame); pointer-events: none; }
+.page .wine { background: var(--wine); }
+.page .t { position: absolute; white-space: nowrap; line-height: normal; }
+.page .bevan { font-family: 'Bevan', 'Rockwell Extra Bold', serif; }
+
+/* hollow double-outline lettering (CONCEPT, WARM, DESSERTS, BORREL, TAFELAAR) */
+.page .outline { color: transparent; -webkit-text-stroke: 1.1pt #fff; }
+.page .hollow { color: transparent; -webkit-text-stroke: 0.9pt #fff; }
+
+/* ───────────── DINNER (437 × 612 pt) ───────────── */
+.page.diner { width: 437.04pt; height: 612pt; }
+/* the original sets Bevan slightly narrow (11/12 width) */
+.diner .bevan { transform: scaleX(.917); transform-origin: 0 0; }
+.diner .t { margin-top: 1.5pt; }
+.diner .label { font-size: 10.9pt; color: var(--wine); }
+.diner .para { position: absolute; text-align: center; font-size: 12.5pt; line-height: 12pt; white-space: pre-line; }
+
+.diner .sec { position: absolute; }
+.diner .sec.card { background: var(--wine); color: #fff; }
+.diner .sec.card::after {
+  content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: var(--pw); background: var(--mauve);
+}
+.diner .list { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--gap, 12pt); padding: calc(var(--pt, 3pt) + 1.5pt) 0 10pt var(--pl, 6pt); }
+.diner .it { display: grid; grid-template-columns: 1fr var(--pw); cursor: default; }
+.diner .it .tx { padding-right: var(--tr, 3pt); min-width: 0; }
+.diner .it .nm { font-size: 12.5pt; line-height: 15pt; }
+.diner .it .ds { font-size: 10pt; line-height: 12pt; white-space: pre-line; }
+.diner .it .pr { font-size: 12.5pt; line-height: 15pt; text-align: center; white-space: nowrap; }
+.diner .sec.right .it .pr { text-align: right; padding-right: 2pt; }
+
+.dot { display: inline-block; width: 7pt; height: 7pt; border-radius: 50%; margin-left: 2.5pt; vertical-align: 0.5pt; }
+.dot:first-child { margin-left: 3.5pt; }
+.dot.veg { background: #5d7a38; } .dot.gf { background: #d8c54b; } .dot.lf { background: #fbf9fb; } .dot.gfb { background: #6f39c0; }
+
+.diner .legend { position: absolute; background: var(--wine); color: #fff; font-size: 10.9pt; line-height: 12pt; }
+.diner .legend .row { position: absolute; left: 8pt; white-space: nowrap; }
+.diner .legend .row .dot { width: 9pt; height: 9pt; margin: 0 7pt 0 0; vertical-align: -1pt; }
+.diner .legend small { font-size: 8.1pt; display: block; padding-left: 16pt; line-height: 10pt; }
+
+/* ───────────── DRINKS (A4, 595.28 × 841.89 pt) ───────────── */
+.page.drinks {
+  --tan: #d7c4a6; --tan-dark: #c2a780; --wine: #4e1726; --frame: #654018; --brown: #594016; --dark: #311b0e; --mauve: #a48b93;
+  width: 595.28pt; height: 841.89pt;
+  font-family: 'Tafelaar Goudy', 'Goudy Old Style', 'Sorts Mill Goudy', Georgia, serif;
+  font-variant-numeric: lining-nums;
+}
+.drinks .bern { font-family: 'Tafelaar Bernard', 'Bernard MT Condensed', 'Bevan', serif; font-weight: normal; }
+.drinks .frame { border-width: 2pt; }
+.drinks .rule { position: absolute; height: 2pt; background: var(--frame); }
+.drinks .foot { position: absolute; left: 18pt; width: 560pt; top: 781pt; height: 23pt; border-top: 2pt solid var(--frame); border-bottom: 2pt solid var(--frame);
+  text-align: center; font-size: 16pt; line-height: 19pt; }
+.drinks .note { position: absolute; color: #fff; font-size: 13.5pt; line-height: 19.5pt; white-space: pre-line; }
+.drinks .blurb { position: absolute; font-size: 13.2pt; line-height: 19.2pt; white-space: pre-line; }
+
+.drinks .sec { position: absolute; }
+.drinks .sec.card { background: var(--wine); color: #fff; }
+.drinks .sec::after {
+  content: ''; position: absolute; right: 0; width: var(--pw); top: var(--st, 0pt); bottom: var(--sb, 0pt); background: var(--wine);
+}
+.drinks .sec.card::after { background: var(--mauve); top: 0; bottom: 0; }
+.drinks .list { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--gap, 18pt); padding: var(--pt, 3pt) 0 6pt var(--pl, 0pt);
+  font-size: 13.2pt; line-height: var(--lh, 19.2pt); }
+.drinks .gt { font-size: 13.2pt; }
+/* the original card squeezes its small text to ~83% width */
+.drinks .sq { transform: scaleX(var(--sx, .826)); transform-origin: 0 0; width: calc(100% / var(--sx, .826)); }
+.drinks .it { display: grid; grid-template-columns: 1fr var(--pw); }
+.drinks .it .tx { padding-right: var(--tr, 4pt); min-width: 0; }
+.drinks .it .ds { white-space: pre-line; }
+.drinks .it .pr { font-size: 16pt; text-align: center; color: #faf9fa; white-space: nowrap; }
+
+/* ───────────── editor-only helpers ───────────── */
+.page [data-p] { cursor: pointer; }
+.page.editing [data-p]:hover { outline: 1.2pt dashed rgba(255, 196, 0, 0.95); outline-offset: 1.5pt; }
+.page .it.hidden-item { display: none; }
+.page.too-full { box-shadow: 0 0 0 4px #d43c2a; }
+
+/* ───────────── paper sheets (PDF / print) ───────────── */
+.sheet { position: relative; overflow: hidden; background: #fff; break-after: page; page-break-after: always; break-inside: avoid; }
+.sheet:last-child { break-after: auto; page-break-after: auto; }
+
+/* ───────────── drinks card without its two original fonts ─────────────
+   Bernard MT Condensed and Goudy Old Style are not free to put online. Where they are
+   missing (the website), the free dinner-menu fonts take over, squeezed to the same width. */
+.nofont .page.drinks { font-family: 'Sorts Mill Goudy', Georgia, serif; }
+.nofont .drinks .bern { font-family: 'Bevan', serif; }
+.nofont .drinks .t.bern { scale: var(--bx, .6) 1; transform-origin: 0 0; }
+.nofont .drinks .bern .sq { --sx: .52; }
+.nofont .drinks .foot .fs { display: inline-block; scale: .6 1; }
