@@ -9,3 +9,5 @@ __pycache__/
 public/assets/fonts/*.ttf
 node_modules/
 .vercel/
+.vercel
+.env*
