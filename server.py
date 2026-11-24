@@ -15,7 +15,8 @@ import threading
 import webbrowser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
-from urllib.request import urlopen
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 APP = os.path.join(ROOT, "public")
@@ -127,6 +128,14 @@ class Handler(SimpleHTTPRequestHandler):
         u = urlparse(self.path)
         if u.path == "/api/publish":
             return self.publish()
+        if u.path == "/api/site":
+            try:
+                body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", "0"))) or b"{}")
+                return self.send_json(site_sync(body.get("action"), body.get("site") or "", body.get("password") or ""))
+            except SiteError as e:
+                return self.send_json({"error": str(e), "code": e.code}, 502)
+            except Exception as e:  # noqa
+                return self.send_json({"error": str(e)}, 500)
         if u.path != "/api/pdf":
             return self.send_json({"error": "not found"}, 404)
         q = parse_qs(u.query)
@@ -158,6 +167,63 @@ def snapshot():
             os.remove(os.path.join(HISTORY, f))
     except OSError:
         pass
+
+
+class SiteError(Exception):
+    def __init__(self, msg, code=""):
+        super().__init__(msg)
+        self.code = code
+
+
+def site_call(site, method="GET", payload=None, password=""):
+    """Talk to the shared menu on the website (api/menu.js on Vercel)."""
+    if not (site.startswith("https://") or site.startswith("http://127.0.0.1") or site.startswith("http://localhost")):
+        raise SiteError("The website address must start with https://", "address")
+    req = Request(site.rstrip("/") + "/api/menu", method=method,
+                  data=json.dumps(payload).encode("utf-8") if payload is not None else None,
+                  headers={"Content-Type": "application/json", "User-Agent": "tafelaar-menu-maker",
+                           "x-menu-password": password.encode("utf-8").decode("latin-1", "ignore")})
+    try:
+        with urlopen(req, timeout=30) as r:
+            raw = r.read()
+    except HTTPError as e:
+        if e.code == 401:
+            raise SiteError("the password is not right", "password")
+        if e.code == 404:
+            raise SiteError("that address is not the menu website", "address")
+        raise SiteError("the website answered with error %d" % e.code)
+    except OSError as e:
+        raise SiteError("could not reach the website (%s)" % getattr(e, "reason", e))
+    try:
+        j = json.loads(raw)
+        assert isinstance(j, dict)
+    except Exception:
+        raise SiteError("that address is not the menu website (or it asks for a Vercel login)", "address")
+    if not j.get("shared", True):
+        raise SiteError("online saving is not switched on for the website yet", "notshared")
+    return j
+
+
+def site_sync(action, site, password):
+    if action == "push":
+        with open(DATA, encoding="utf-8") as f:
+            data = json.load(f)
+        site_call(site, "PUT", {"force": True, "data": data}, password)
+        return {"ok": True}
+    if action == "pull":
+        j = site_call(site)
+        data = j.get("data")
+        if not (isinstance(data, dict) and "diner" in data and "drinks" in data):
+            raise SiteError("the website has no saved menu yet")
+        os.makedirs(HISTORY, exist_ok=True)
+        if os.path.exists(DATA):  # keep what was on this Mac
+            shutil.copy(DATA, os.path.join(HISTORY, "before website %s.json" % datetime.datetime.now().strftime("%Y-%m-%d %H.%M.%S")))
+        tmp = DATA + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=1)
+        os.replace(tmp, DATA)
+        return {"ok": True, "data": data}
+    raise SiteError("unknown action")
 
 
 def git(*args):

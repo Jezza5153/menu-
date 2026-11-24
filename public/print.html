@@ -27,7 +27,8 @@
   const st = document.createElement('style');
   st.textContent = `@page { size: ${size}; margin: 0; }`;
   document.head.appendChild(st);
-  const { data } = await MenuStore.init();
+  const st0 = await MenuStore.init();
+  const data = st0.pending ? MenuStore.fill(st0.pending) : st0.data;   // changes on this device that are not online yet still print
   const box = document.getElementById('pages');
   MenuRender.render(menu, data, box);
   MenuRender.sheets(box, menu, size);

@@ -140,27 +140,79 @@
   let data = clone(window.MENU_DEFAULTS);
   let menu = 'diner';
   let local = false, draft = false;   // local = running on your own Mac; draft = unpublished edits in this browser
+  let shared = false, pending = null; // shared = on the website, everybody edits the same menu
+  let locked = false;                 // shared, but no (right) password yet: changes stay on this device
   const paperChoice = {};
   const open = new Set();   // which blocks are folded open
 
   // ───── loading & saving ─────
-  async function load() { const r = await MenuStore.init(); data = r.data; local = r.local; draft = r.draft; }
-  let saveTimer = 0, saving = null;
+  async function load() { const r = await MenuStore.init(); data = r.data; local = r.local; draft = r.draft; shared = r.shared; pending = r.pending; locked = shared && !MenuStore.hasPass(); }
+  let saveTimer = 0, saving = null, busy = 0, retryTimer = 0, asked = false;
+  const now = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   function status(s) { $('#status').textContent = s; }
   function changed() { status('Saving…'); clearTimeout(saveTimer); saveTimer = setTimeout(save, 500); schedulePreview(); }
   function save() {
-    clearTimeout(saveTimer); saveTimer = 0;
-    saving = MenuStore.save(data).then(() => {
-      const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      status((local ? 'Saved ✓ ' : 'Saved on this device ✓ ') + t);
-      if (!local && !draft) { draft = true; showDraft(); }
-    }).catch(() => status('Could not save!'));
+    clearTimeout(saveTimer); clearTimeout(retryTimer); saveTimer = 0;
+    const sent = clone(data); busy++;
+    saving = MenuStore.save(data).then((merged) => {
+      busy--;
+      if (merged) {   // somebody else saved at the same moment: both sets of changes are now combined
+        const typedMore = !MenuStore.same(data, sent);
+        data = typedMore ? MenuStore.merge(sent, data, merged) : merged;
+        refresh(); if (typedMore) changed();
+      }
+      if (locked) { locked = false; showDraft(); }
+      if (!saveTimer) status((local ? 'Saved ✓ ' : shared ? 'Saved online ✓ ' : 'Saved on this device ✓ ') + now());
+      if (!local && !shared && !draft) { draft = true; showDraft(); }
+    }).catch((err) => {
+      busy--;
+      if (shared && err.code === 'password') {
+        locked = true; showDraft(); status('Not saved online – password needed');
+        if (!asked) { asked = true; askPass(); }
+      } else if (shared) {
+        status('No connection – kept on this device, trying again…');
+        retryTimer = setTimeout(save, 8000);
+      } else status('Could not save!');
+    });
     return saving;
+  }
+  async function askPass() {
+    const p = prompt('Password to change the menu for everyone:');
+    if (!p) return;
+    let ok = false;
+    try { ok = await MenuStore.checkPass(p.trim()); } catch (e) {}
+    if (!ok) { toast('That password is not right. Your changes are kept on this device only.', 7000); return; }
+    locked = false; showDraft(); toast('Password accepted. Your changes are now saved for everyone.', 5000);
+    save();
   }
   function showDraft() {
     const d = $('#draft'); if (!d) return;
+    if (shared) {
+      d.style.display = locked ? 'block' : 'none';
+      d.innerHTML = `<b>You are looking, not saving</b>Anything you change stays on this device until you <a data-tool="pass">enter the password</a>.`;
+      return;
+    }
     d.style.display = draft && !local ? 'block' : 'none';
     d.innerHTML = `<b>Your changes are only on this device</b>Other people still see the published menu. <a data-tool="download">Download the menu file</a> to share your version, or <a data-tool="discard">throw your changes away</a>.`;
+  }
+  // Rebuild the form without losing the field you are typing in.
+  function refresh() {
+    const el = document.activeElement, inForm = el && el.dataset && el.dataset.f && $('#form').contains(el);
+    const f = inForm && el.dataset.f, holder = inForm && el.closest('[data-path]'), path = holder && holder.dataset.path;
+    const sel = inForm ? [el.selectionStart, el.selectionEnd] : null;
+    buildForm(); drawPreview();
+    if (!path) return;
+    const h = [...document.querySelectorAll('#form [data-path]')].find((x) => x.dataset.path === path);
+    const again = h && (h.dataset.f === f ? h : h.querySelector(`[data-f="${f}"]`));
+    if (again) { again.focus({ preventScroll: true }); try { again.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
+  }
+  // Pick up what other people changed.
+  async function sync() {
+    if (!shared || document.visibilityState !== 'visible' || saveTimer || busy) return;
+    const p = await MenuStore.poll();
+    if (!p || saveTimer || busy) return;     // I started typing meanwhile: my next save combines both
+    MenuStore.adopt(p); data = p.data; refresh();
+    status('Updated by someone else ' + now());
   }
   function download() {
     const a = document.createElement('a');
@@ -212,10 +264,10 @@
   }
   function buildForm() {
     const f = $('#form'), top = f.scrollTop;
-    f.innerHTML = `<div id="draft"></div><div id="warn"></div><p class="hint">Click anything on the menu to edit it. Changes are saved automatically.</p>` +
+    f.innerHTML = `<div id="draft"></div><div id="warn"></div><p class="hint">Click anything on the menu to edit it. ${shared ? 'Changes are saved online automatically, for everyone.' : 'Changes are saved automatically.'}</p>` +
       LAYOUT[menu].map(([title, blocks]) => `<h2 class="pg">${esc(title)}</h2>` +
         blocks.map(([kind, id, label, big]) => kind === 'sec' ? secHTML(id, label) : textHTML(id, label, big)).join('')).join('') +
-      `<div class="tools"><a data-tool="download">Download menu file (backup)</a><a data-tool="upload">Load a menu file</a><a data-tool="reset">Reset this menu to the original</a></div>`;
+      `<div class="tools"><a data-tool="download">Download menu file (backup)</a><a data-tool="upload">Load a menu file</a><a data-tool="reset">Reset this menu to the original</a>${local ? '<a data-tool="pull">Get the menu from the website</a>' : ''}</div>`;
     showDraft();
     f.querySelectorAll('textarea').forEach(grow);
     f.scrollTop = top;
@@ -314,9 +366,11 @@
     if (tool === 'download') download();
     if (tool === 'upload') upload();
     if (tool === 'reset') {
-      if (!confirm(`Throw away ALL changes to the ${MenuRender.MENUS[menu].label.toLowerCase()} and go back to the original?`)) return;
+      if (!confirm(`Throw away ALL changes to the ${MenuRender.MENUS[menu].label.toLowerCase()} and go back to the original?${shared ? ' This changes it for everyone.' : ''}`)) return;
       data[menu] = clone(window.MENU_DEFAULTS[menu]); buildForm(); changed();
     }
+    if (tool === 'pass') askPass();
+    if (tool === 'pull') pull();
     if (tool === 'discard') {
       if (!confirm('Throw away your changes on this device and show the published menu again?')) return;
       clearTimeout(saveTimer); data = MenuStore.discard(); draft = false; buildForm(); drawPreview(); status('');
@@ -334,13 +388,16 @@
   $('#tabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setMenu(b.dataset.menu); });
   $('#save').addEventListener('click', async () => {
     await save();
+    if (shared && locked) { asked = true; return askPass(); }
     toast(local ? 'Saved. Your menu is also saved automatically while you work, and a copy is kept every 10 minutes in the data/history folder.'
+      : shared ? 'Saved online for everyone. It is also saved automatically while you work, and the last 60 versions are kept as backups.'
       : 'Saved on this device. It is also saved automatically while you work. Use "Download menu file" at the bottom left for a backup you can keep.', 7000);
   });
   // never lose the last few keystrokes: save when the tab is closed, hidden or reloaded
   const flush = () => { if (saveTimer) { clearTimeout(saveTimer); saveTimer = 0; MenuStore.save(data, true).catch(() => {}); } };
   window.addEventListener('pagehide', flush);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); else sync(); });
+  setInterval(sync, 10000);
   $('#paper').addEventListener('change', (e) => { paperChoice[menu] = e.target.value; });
   let toastTimer = 0;
   function toast(msg, ms) { const t = $('#toast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(toastTimer); if (ms) toastTimer = setTimeout(() => (t.style.display = 'none'), ms); }
@@ -361,14 +418,61 @@
     }
     btn.disabled = false;
   });
+  // ───── Mac app ↔ website ─────
+  const SITE = 'tafelaar-menu-site', SITEPASS = 'tafelaar-menu-pass';
+  const mem = (k, v) => { try { if (v === undefined) return localStorage.getItem(k) || ''; localStorage.setItem(k, v); } catch (e) {} return v || ''; };
+  function siteAddress(ask) {
+    let u = mem(SITE);
+    if (!u || ask) {
+      u = prompt('Address of the menu website (copy it from the browser, for example https://your-menu.vercel.app):', u || 'https://');
+      if (u === null) return null;
+      u = u.trim().replace(/\/+$/, ''); if (u && !/^https?:\/\//.test(u)) u = 'https://' + u;
+      if (u === 'https:' || u === 'https://') u = '';
+      mem(SITE, u);
+    }
+    return u;
+  }
+  async function site(action, extra) {
+    const r = await fetch('/api/site', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ action, site: mem(SITE), password: mem(SITEPASS) }, extra)) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { const e = new Error(j.error || 'failed'); e.code = j.code; throw e; }
+    return j;
+  }
+  async function withPassword(fn) {
+    try { return await fn(); } catch (e) {
+      if (e.code !== 'password') throw e;
+      const p = prompt('Password to change the menu on the website:');
+      if (!p) throw new Error('no password given');
+      mem(SITEPASS, p.trim());
+      return fn();
+    }
+  }
+  async function pull() {
+    if (!siteAddress()) return;
+    if (!confirm('Replace the menu on this Mac with the one from the website? (A backup copy of the current one is kept in data/history.)')) return;
+    try {
+      if (saveTimer) await save(); else if (saving) await saving;
+      const j = await site('pull');
+      data = MenuStore.fill(j.data); buildForm(); drawPreview(); status('Loaded from the website ' + now());
+      toast('This Mac now has the menu from the website.', 5000);
+    } catch (err) { if (err.code === 'address') mem(SITE, ''); toast('Could not get the menu from the website: ' + err.message, 10000); }
+  }
   $('#publish').addEventListener('click', async () => {
-    if (!confirm('Put the menu as it is now on the website, for everyone to see?')) return;
+    const addr = siteAddress(); if (addr === null) return;
+    if (!confirm('Put the menu as it is on this Mac on the website, for everyone? It replaces what is on the website now.')) return;
     const btn = $('#publish'); btn.disabled = true; toast('Publishing…');
     try {
       if (saveTimer) await save(); else if (saving) await saving;
-      const r = await fetch('/api/publish', { method: 'POST' }), j = await r.json();
-      if (!r.ok) throw new Error(j.error || 'failed');
-      toast(j.changed ? 'Published. The website updates itself in about a minute.' : 'Nothing new to publish — the website already has this menu.', 7000);
+      let viaGit = !addr;
+      if (addr) {
+        try { await withPassword(() => site('push')); toast('Published. Everyone on the website gets it within a few seconds.', 7000); }
+        catch (err) { if (err.code === 'notshared') viaGit = true; else { if (err.code === 'address') mem(SITE, ''); throw err; } }
+      }
+      if (viaGit) {
+        const r = await fetch('/api/publish', { method: 'POST' }), j = await r.json();
+        if (!r.ok) throw new Error(j.error || 'failed');
+        toast(j.changed ? 'Published. The website updates itself in about a minute.' : 'Nothing new to publish — the website already has this menu.', 7000);
+      }
     } catch (err) { toast('Could not publish: ' + err.message, 10000); }
     btn.disabled = false;
   });
@@ -376,7 +480,10 @@
   load().then(async () => {
     $('#publish').hidden = !local;
     setMenu('diner');
-    status(draft ? 'Saved on this device' : '');
+    status(draft ? 'Saved on this device' : shared ? 'Shared menu – everyone sees your changes' : '');
+    if (pending && confirm('This device still has changes that were never saved online. Use them now?\n\nOK = put them in the shared menu\nCancel = throw them away')) {
+      data = MenuStore.merge(data, MenuStore.fill(pending), data); buildForm(); changed();
+    } else if (pending) MenuStore.discard();
     await MenuStore.fonts();
     drawPreview();
   });

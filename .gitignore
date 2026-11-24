@@ -7,3 +7,5 @@ originals/
 __pycache__/
 # Microsoft fonts used by the drinks card: fine on your own Mac, not allowed online
 public/assets/fonts/*.ttf
+node_modules/
+.vercel/

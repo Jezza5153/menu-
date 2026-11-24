@@ -38,3 +38,26 @@ The dinner menu uses Bevan and Sorts Mill Goudy (free, Google Fonts). The origin
 Bernard MT Condensed and Goudy Old Style, which come with Microsoft Office and may not be put online.
 On a Mac that has them in `public/assets/fonts/`, PDFs use the original fonts; the website uses the
 free dinner-menu fonts in the same shapes instead.
+
+## Editing together on the website (shared saving)
+
+With this switched on, everyone who opens the website edits the same menu. Changes are
+saved online about half a second after typing, and other people's screens follow within
+about 10 seconds. The last 60 saved versions are kept as backups.
+
+Switch it on once in Vercel (project `menu-`):
+
+1. **Storage → Create Database → Blob** → create it and connect it to this project.
+2. **Settings → Environment Variables** → add `EDIT_PASSWORD` with a password of your
+   choice (plain letters and numbers), for all environments.
+3. **Deployments → ⋯ → Redeploy** so the site picks both up.
+
+Anyone can look at the menu; changing it asks once per device for the password.
+Until these steps are done the website works as before (edits stay on your own device).
+
+On the Mac app, **Publish online** now sends the Mac's menu straight to the website
+(it asks once for the website address and the password), and **Get the menu from the
+website** at the bottom left brings the shared menu to the Mac, for example to make
+the PDF with the original drinks fonts.
+
+The code for this is `api/menu.js`.
